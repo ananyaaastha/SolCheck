@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SolCheck — Smart Contract Auditor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #f5f0e8;
+      --surface:   #fffdf8;
+      --surface2:  #f0ebe0;
+      --border:    #ddd8cc;
+      --border2:   #c8c2b4;
+      --ink:       #1a1610;
+      --ink2:      #4a4438;
+      --muted:     #9a9080;
+      --accent:    #c84b2f;
+      --accent2:   #1a6b4a;
+      --critical:  #c0392b;
+      --high:      #d4500a;
+      --medium:    #b8860b;
+      --low:       #1a6b4a;
+      --info:      #1a4a8a;
+      --mono:      'DM Mono', monospace;
+      --serif:     'Fraunces', serif;
+      --sans:      'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      min-height: 100vh;
+    }
+
+    /* Subtle paper texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 28px 80px;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 36px 0 28px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 36px;
+    }
+
+    .logo-block { display: flex; flex-direction: column; gap: 2px; }
+
+    .logo-eyebrow {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900;
+      color: var(--ink);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .header-right {
+      text-align: right;
+    }
+
+    .header-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* ── Layout ── */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .main-grid { grid-template-columns: 1fr; }
+      header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .header-right { text-align: left; }
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1.5px solid var(--border2);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 4px 4px 0px var(--border2);
+    }
+
+    .card-header {
+      padding: 10px 16px;
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface2);
+    }
+
+    .card-title {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── Editor ── */
+    #code-input {
+      width: 100%;
+      height: 400px;
+      background: transparent;
+      border: none;
+      outline: none;
+      resize: none;
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.75;
+      color: var(--ink);
+      caret-color: var(--accent);
+    }
+
+    #code-input::placeholder { color: var(--muted); }
+
+    /* ── Buttons ── */
+    .sample-btn {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.08em;
+    }
+
+    .sample-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .audit-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--ink);
+      color: var(--bg);
+      border: none;
+      font-family: var(--serif);
+      font-size: 16px;
+      font-weight: 700;
+      font-style: italic;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 4px;
+      box-shadow: 3px 3px 0 var(--border2);
+    }
+
+    .audit-btn:hover {
+      background: var(--accent);
+      box-shadow: 3px 3px 0 #8b2510;
+      transform: translate(-1px, -1px);
+    }
+
+    .audit-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--border2);
+    }
+
+    .audit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(245,240,232,0.3);
+      border-top-color: var(--bg);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      display: none;
+    }
+
+    .audit-btn.loading .spinner { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Placeholder ── */
+    .placeholder {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .placeholder-number {
+      font-family: var(--serif);
+      font-size: 80px;
+      font-weight: 900;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .placeholder p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-family: var(--mono);
+    }
+
+    /* ── Score banner ── */
+    .score-banner {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border-bottom: 1.5px solid var(--border);
+      background: var(--surface2);
+    }
+
+    .score-ring {
+      flex-shrink: 0;
+      width: 72px; height: 72px;
+      position: relative;
+    }
+
+    .score-ring svg { transform: rotate(-90deg); }
+    .score-ring .ring-bg { fill: none; stroke: var(--border); stroke-width: 5; }
+    .score-ring .ring-fill { fill: none; stroke-width: 5; stroke-linecap: round; }
+
+    .score-num {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--ink);
+    }
+
+    .score-name {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+
+    .risk-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 2px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 6px;
+      border: 1.5px solid;
+    }
+
+    .risk-CRITICAL { color: var(--critical); border-color: var(--critical); background: #fdf0ee; }
+    .risk-HIGH     { color: var(--high);     border-color: var(--high);     background: #fdf3ee; }
+    .risk-MEDIUM   { color: var(--medium);   border-color: var(--medium);   background: #fdf9ee; }
+    .risk-LOW      { color: var(--low);      border-color: var(--low);      background: #eef7f2; }
+    .risk-SAFE     { color: var(--low);      border-color: var(--low);      background: #eef7f2; }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: flex;
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .stat-cell {
+      flex: 1;
+      padding: 14px 8px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-cell:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .stat-lbl {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* ── Summary ── */
+    .summary-text {
+      padding: 16px 20px;
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--ink2);
+      border-bottom: 1.5px solid var(--border);
+      font-family: var(--sans);
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      padding: 8px 16px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+
+    /* ── Vuln card ── */
+    .vuln-card { border-bottom: 1px solid var(--border); }
+
+    .vuln-header {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+
+    .vuln-header:hover { background: var(--surface2); }
+
+    .sev-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .sev-CRITICAL { background: var(--critical); }
+    .sev-HIGH     { background: var(--high); }
+    .sev-MEDIUM   { background: var(--medium); }
+    .sev-LOW      { background: var(--low); }
+    .sev-INFO     { background: var(--info); }
+
+    .vuln-id {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      width: 40px;
+      flex-shrink: 0;
+    }
+
+    .vuln-title {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .sev-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 2px;
+      border: 1px solid;
+    }
+
+    .sev-label-CRITICAL { color: var(--critical); border-color: var(--critical); background: #fdf0ee; }
+    .sev-label-HIGH     { color: var(--high);     border-color: var(--high);     background: #fdf3ee; }
+    .sev-label-MEDIUM   { color: var(--medium);   border-color: var(--medium);   background: #fdf9ee; }
+    .sev-label-LOW      { color: var(--low);      border-color: var(--low);      background: #eef7f2; }
+    .sev-label-INFO     { color: var(--info);     border-color: var(--info);     background: #eef2fd; }
+
+    .chevron {
+      color: var(--muted);
+      font-size: 12px;
+      transition: transform 0.2s;
+    }
+
+    .vuln-card.open .chevron { transform: rotate(90deg); }
+
+    .vuln-body {
+      display: none;
+      padding: 0 16px 16px 56px;
+    }
+
+    .vuln-card.open .vuln-body { display: block; }
+
+    .vuln-field { margin-top: 12px; }
+
+    .field-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .field-val {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--ink2);
+    }
+
+    .code-block {
+      background: var(--ink);
+      color: #f5c542;
+      border-radius: 3px;
+      padding: 10px 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre;
+      margin-top: 4px;
+    }
+
+    .rec-text {
+      background: #eef7f2;
+      border-left: 3px solid var(--low);
+      padding: 10px 14px;
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--ink2);
+      border-radius: 0 3px 3px 0;
+    }
+
+    /* ── Positive findings ── */
+    .positive-list {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .positive-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--ink2);
+      line-height: 1.5;
+    }
+
+    .positive-item::before {
+      content: '✓';
+      color: var(--low);
+      font-size: 12px;
+      flex-shrink: 0;
+      font-weight: bold;
+      margin-top: 1px;
+    }
+
+    /* ── Gas ── */
+    .gas-item {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .gas-item:last-child { border-bottom: none; }
+
+    .gas-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--medium);
+      margin-bottom: 3px;
+    }
+
+    .gas-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ── Error ── */
+    .error-banner {
+      margin: 16px;
+      padding: 14px 16px;
+      background: #fdf0ee;
+      border: 1.5px solid var(--critical);
+      border-radius: 3px;
+      color: var(--critical);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="logo-block">
+      <span class="logo-eyebrow">AI-Powered Security Tool</span>
+      <h1>Solid<em>Scan</em></h1>
+    </div>
+    <div class="header-right">
+      <div class="header-tag">Paste your Solidity contract.<br>Get a full vulnerability audit, instantly.</div>
+    </div>
+  </header>
+
+  <div class="main-grid">
+
+    <!-- LEFT -->
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Contract Source</span>
+          <button class="sample-btn" onclick="loadSample()">load example</button>
+        </div>
+        <textarea id="code-input" spellcheck="false" placeholder="// Paste your Solidity contract here..."></textarea>
+      </div>
+
+      <button class="audit-btn" id="audit-btn" onclick="runAudit()">
+        <div class="spinner"></div>
+        <span class="btn-text">Run Security Audit →</span>
+      </button>
+    </div>
+
+    <!-- RIGHT -->
+    <div>
+      <div class="card" id="results-panel" style="display:none;"></div>
+
+      <div class="card" id="placeholder-panel">
+        <div class="placeholder">
+          <div class="placeholder-number">13+</div>
+          <p>vulnerability classes checked.<br>Paste a contract and run the audit.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SAMPLE = `// SPDX-License-Identifier: MIT
+pragma solidity ^0.6.0;
+
+contract VulnerableBank {
+    mapping(address => uint256) public balances;
+    address public owner;
+
+    constructor() public {
+        owner = msg.sender;
+    }
+
+    function deposit() public payable {
+        balances[msg.sender] += msg.value;
+    }
+
+    // VULNERABILITY: Reentrancy attack possible
+    function withdraw(uint256 amount) public {
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        (bool success, ) = msg.sender.call{value: amount}("");
+        require(success, "Transfer failed");
+        balances[msg.sender] -= amount;
+    }
+
+    // VULNERABILITY: tx.origin authentication
+    function adminTransfer(address payable to, uint256 amount) public {
+        require(tx.origin == owner, "Not owner");
+        to.transfer(amount);
+    }
+
+    // VULNERABILITY: Integer overflow (Solidity < 0.8.0)
+    function unsafeAdd(uint256 a, uint256 b) public pure returns (uint256) {
+        return a + b;
+    }
+
+    // VULNERABILITY: Unprotected selfdestruct
+    function destroy() public {
+        selfdestruct(payable(msg.sender));
+    }
+}`;
+
+function loadSample() {
+  document.getElementById('code-input').value = SAMPLE;
+}
+
+async function runAudit() {
+  const code = document.getElementById('code-input').value.trim();
+  if (!code) { alert('Paste a Solidity contract first.'); return; }
+
+  const btn = document.getElementById('audit-btn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  document.getElementById('placeholder-panel').style.display = 'none';
+  const panel = document.getElementById('results-panel');
+  panel.style.display = 'none';
+  panel.innerHTML = '';
+
+  try {
+    const resp = await fetch('/audit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+    const data = await resp.json();
+    if (data.error) {
+      panel.style.display = 'block';
+      panel.innerHTML = `<div class="error-banner">⚠ ${data.error}</div>`;
+      return;
+    }
+    renderResults(panel, data);
+    panel.style.display = 'block';
+  } catch(e) {
+    panel.style.display = 'block';
+    panel.innerHTML = `<div class="error-banner">⚠ ${e.message}</div>`;
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+}
+
+function renderResults(panel, d) {
+  const vulns = d.vulnerabilities || [];
+  const gas   = d.gas_optimisations || [];
+  const pos   = d.positive_findings || [];
+
+  const order = { CRITICAL:0, HIGH:1, MEDIUM:2, LOW:3, INFO:4 };
+  const sorted = [...vulns].sort((a,b) => (order[a.severity]??5) - (order[b.severity]??5));
+
+  const counts = { CRITICAL:0, HIGH:0, MEDIUM:0, LOW:0 };
+  vulns.forEach(v => { if (counts[v.severity] !== undefined) counts[v.severity]++; });
+
+  const score = d.audit_score ?? 0;
+  const ringColor = score >= 80 ? 'var(--low)' : score >= 50 ? 'var(--medium)' : 'var(--critical)';
+  const circ = 2 * Math.PI * 28;
+  const offset = circ * (1 - score / 100);
+
+  let html = `
+    <div class="card-header">
+      <span class="card-title">Audit Report</span>
+      <span style="font-family:var(--mono);font-size:10px;color:var(--muted);">powered by Groq / Llama 3.3</span>
+    </div>
+
+    <div class="score-banner">
+      <div class="score-ring">
+        <svg viewBox="0 0 72 72" width="72" height="72">
+          <circle class="ring-bg" cx="36" cy="36" r="28"/>
+          <circle class="ring-fill" cx="36" cy="36" r="28"
+            stroke="${ringColor}"
+            stroke-dasharray="${circ}"
+            stroke-dashoffset="${offset}"/>
+        </svg>
+        <div class="score-num">${score}</div>
+      </div>
+      <div>
+        <div class="score-name">${esc(d.contract_name || 'Contract')}</div>
+        <div class="risk-badge risk-${d.overall_risk}">${d.overall_risk} Risk</div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-cell">
+        <div class="stat-num" style="color:var(--critical)">${counts.CRITICAL}</div>
+        <div class="stat-lbl">Critical</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num" style="color:var(--high)">${counts.HIGH}</div>
+        <div class="stat-lbl">High</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num" style="color:var(--medium)">${counts.MEDIUM}</div>
+        <div class="stat-lbl">Medium</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num" style="color:var(--low)">${counts.LOW}</div>
+        <div class="stat-lbl">Low</div>
+      </div>
+    </div>
+
+    <div class="summary-text">${esc(d.summary || '')}</div>
+  `;
+
+  if (sorted.length) {
+    html += `<div class="section-label">Vulnerabilities (${sorted.length})</div>`;
+    sorted.forEach((v, i) => {
+      html += `
+        <div class="vuln-card" id="vc-${i}">
+          <div class="vuln-header" onclick="toggle(${i})">
+            <div class="sev-dot sev-${v.severity}"></div>
+            <span class="vuln-id">${esc(v.id)}</span>
+            <span class="vuln-title">${esc(v.title)}</span>
+            <span class="sev-label sev-label-${v.severity}">${v.severity}</span>
+            <span class="chevron">›</span>
+          </div>
+          <div class="vuln-body">
+            <div class="vuln-field">
+              <div class="field-label">Category</div>
+              <div class="field-val">${esc(v.category)} &mdash; ${esc(v.affected_lines)}</div>
+            </div>
+            <div class="vuln-field">
+              <div class="field-label">Description</div>
+              <div class="field-val">${esc(v.description)}</div>
+            </div>
+            ${v.code_snippet ? `<div class="vuln-field"><div class="field-label">Vulnerable Code</div><div class="code-block">${esc(v.code_snippet)}</div></div>` : ''}
+            <div class="vuln-field">
+              <div class="field-label">Impact</div>
+              <div class="field-val">${esc(v.impact)}</div>
+            </div>
+            <div class="vuln-field">
+              <div class="field-label">Recommendation</div>
+              <div class="rec-text">${esc(v.recommendation)}</div>
+            </div>
+          </div>
+        </div>`;
+    });
+  } else {
+    html += `<div class="section-label">Vulnerabilities</div>
+      <div class="placeholder" style="padding:24px 16px">
+        <p style="color:var(--low);font-family:var(--mono)">✓ No vulnerabilities detected.</p>
+      </div>`;
+  }
+
+  if (gas.length) {
+    html += `<div class="section-label">Gas Optimisations (${gas.length})</div>`;
+    gas.forEach(g => {
+      html += `<div class="gas-item">
+        <div class="gas-title">${esc(g.title)}</div>
+        <div class="gas-desc">${esc(g.description)} <span style="color:var(--muted);font-family:var(--mono);font-size:10px">${esc(g.affected_lines)}</span></div>
+      </div>`;
+    });
+  }
+
+  if (pos.length) {
+    html += `<div class="section-label">Good Practices Found</div><div class="positive-list">`;
+    pos.forEach(p => { html += `<div class="positive-item">${esc(p)}</div>`; });
+    html += '</div>';
+  }
+
+  panel.innerHTML = html;
+}
+
+function toggle(i) {
+  document.getElementById(`vc-${i}`).classList.toggle('open');
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
