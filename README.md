@@ -4,14 +4,14 @@
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat-square)
 ![Flask](https://img.shields.io/badge/Flask-3.1-lightgrey?style=flat-square)
-![Claude API](https://img.shields.io/badge/Claude-Sonnet_4-orange?style=flat-square)
+![Groq](https://img.shields.io/badge/Groq-Llama_3.3_70B-orange?style=flat-square)
 ![Solidity](https://img.shields.io/badge/Solidity-0.6--0.8-purple?style=flat-square)
 
 ---
 
 ## Overview
 
-SolCheck uses Claude (Anthropic's LLM) with a security-specialised system prompt to perform deep static analysis of Solidity smart contracts. It returns a structured JSON vulnerability report rendered in a clean web UI — covering 13+ vulnerability classes, gas optimisations, and an overall security score.
+SolCheck uses Llama 3.3 70B (via Groq API) with a security-specialised system prompt to perform deep static analysis of Solidity smart contracts. It returns a structured JSON vulnerability report rendered in a clean web UI — covering 13+ vulnerability classes, gas optimisations, and an overall security score.
 
 This project sits at the intersection of **AI**, **blockchain**, and **cybersecurity** — combining LLM reasoning with smart contract security domain knowledge.
 
@@ -46,7 +46,7 @@ This project sits at the intersection of **AI**, **blockchain**, and **cybersecu
 | Layer | Tech |
 |---|---|
 | Backend | Python 3.10+, Flask |
-| AI Engine | Claude Sonnet (Anthropic API) |
+| AI Engine | Llama 3.3 70B (Groq API) |
 | Frontend | Vanilla HTML/CSS/JS |
 | Smart Contracts | Solidity 0.6–0.8 |
 
@@ -67,10 +67,12 @@ cd SolCheck
 pip install -r requirements.txt
 ```
 
-### 3. Set your Anthropic API key
+### 3. Set your Groq API key
+
+Get a free key at [console.groq.com](https://console.groq.com)
 
 ```bash
-export ANTHROPIC_API_KEY=your_api_key_here
+echo "GROQ_API_KEY=your_key_here" > .env
 ```
 
 ### 4. Run the app
@@ -103,7 +105,7 @@ Tested against known vulnerable contracts from [Damn Vulnerable DeFi](https://ww
 {
   "contract_name": "VulnerableBank",
   "overall_risk": "CRITICAL",
-  "audit_score": 18,
+  "audit_score": 20,
   "summary": "VulnerableBank contains four critical vulnerabilities...",
   "vulnerabilities": [
     {
@@ -126,7 +128,7 @@ Tested against known vulnerable contracts from [Damn Vulnerable DeFi](https://ww
 ```
 SolCheck/
 ├── app.py              # Flask web server
-├── auditor.py          # Claude API integration & audit logic
+├── auditor.py          # Groq API integration & audit logic
 ├── templates/
 │   └── index.html      # Frontend UI
 ├── requirements.txt
