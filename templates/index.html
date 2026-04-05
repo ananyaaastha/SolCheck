@@ -37,7 +37,6 @@
       min-height: 100vh;
     }
 
-    /* Subtle paper texture */
     body::before {
       content: '';
       position: fixed;
@@ -55,7 +54,6 @@
       padding: 0 28px 80px;
     }
 
-    /* ── Header ── */
     header {
       padding: 36px 0 28px;
       display: flex;
@@ -89,9 +87,7 @@
       color: var(--accent);
     }
 
-    .header-right {
-      text-align: right;
-    }
+    .header-right { text-align: right; }
 
     .header-tag {
       font-family: var(--mono);
@@ -100,7 +96,6 @@
       line-height: 1.8;
     }
 
-    /* ── Layout ── */
     .main-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -114,7 +109,6 @@
       .header-right { text-align: left; }
     }
 
-    /* ── Card ── */
     .card {
       background: var(--surface);
       border: 1.5px solid var(--border2);
@@ -140,7 +134,6 @@
       color: var(--muted);
     }
 
-    /* ── Editor ── */
     #code-input {
       width: 100%;
       height: 400px;
@@ -158,7 +151,6 @@
 
     #code-input::placeholder { color: var(--muted); }
 
-    /* ── Buttons ── */
     .sample-btn {
       background: transparent;
       border: 1px solid var(--border2);
@@ -172,10 +164,7 @@
       letter-spacing: 0.08em;
     }
 
-    .sample-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
+    .sample-btn:hover { border-color: var(--accent); color: var(--accent); }
 
     .audit-btn {
       width: 100%;
@@ -198,17 +187,8 @@
       box-shadow: 3px 3px 0 var(--border2);
     }
 
-    .audit-btn:hover {
-      background: var(--accent);
-      box-shadow: 3px 3px 0 #8b2510;
-      transform: translate(-1px, -1px);
-    }
-
-    .audit-btn:active {
-      transform: translate(1px, 1px);
-      box-shadow: 1px 1px 0 var(--border2);
-    }
-
+    .audit-btn:hover { background: var(--accent); box-shadow: 3px 3px 0 #8b2510; transform: translate(-1px, -1px); }
+    .audit-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border2); }
     .audit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
     .spinner {
@@ -221,14 +201,9 @@
     }
 
     .audit-btn.loading .spinner { display: block; }
-
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Placeholder ── */
-    .placeholder {
-      padding: 60px 20px;
-      text-align: center;
-    }
+    .placeholder { padding: 60px 20px; text-align: center; }
 
     .placeholder-number {
       font-family: var(--serif);
@@ -239,14 +214,8 @@
       margin-bottom: 12px;
     }
 
-    .placeholder p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.7;
-      font-family: var(--mono);
-    }
+    .placeholder p { font-size: 13px; color: var(--muted); line-height: 1.7; font-family: var(--mono); }
 
-    /* ── Score banner ── */
     .score-banner {
       padding: 20px;
       display: flex;
@@ -256,47 +225,23 @@
       background: var(--surface2);
     }
 
-    .score-ring {
-      flex-shrink: 0;
-      width: 72px; height: 72px;
-      position: relative;
-    }
-
+    .score-ring { flex-shrink: 0; width: 72px; height: 72px; position: relative; }
     .score-ring svg { transform: rotate(-90deg); }
     .score-ring .ring-bg { fill: none; stroke: var(--border); stroke-width: 5; }
     .score-ring .ring-fill { fill: none; stroke-width: 5; stroke-linecap: round; }
 
     .score-num {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--serif);
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--ink);
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--serif); font-size: 20px; font-weight: 900; color: var(--ink);
     }
 
-    .score-name {
-      font-family: var(--serif);
-      font-size: 22px;
-      font-weight: 900;
-      color: var(--ink);
-      letter-spacing: -0.02em;
-    }
+    .score-name { font-family: var(--serif); font-size: 22px; font-weight: 900; color: var(--ink); letter-spacing: -0.02em; }
 
     .risk-badge {
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 2px;
-      font-family: var(--mono);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-top: 6px;
-      border: 1.5px solid;
+      display: inline-block; padding: 2px 10px; border-radius: 2px;
+      font-family: var(--mono); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6px; border: 1.5px solid;
     }
 
     .risk-CRITICAL { color: var(--critical); border-color: var(--critical); background: #fdf0ee; }
@@ -305,230 +250,62 @@
     .risk-LOW      { color: var(--low);      border-color: var(--low);      background: #eef7f2; }
     .risk-SAFE     { color: var(--low);      border-color: var(--low);      background: #eef7f2; }
 
-    /* ── Stats row ── */
-    .stats-row {
-      display: flex;
-      border-bottom: 1.5px solid var(--border);
-    }
+    .stats-row { display: flex; border-bottom: 1.5px solid var(--border); }
 
-    .stat-cell {
-      flex: 1;
-      padding: 14px 8px;
-      text-align: center;
-      border-right: 1px solid var(--border);
-    }
-
+    .stat-cell { flex: 1; padding: 14px 8px; text-align: center; border-right: 1px solid var(--border); }
     .stat-cell:last-child { border-right: none; }
+    .stat-num { font-family: var(--serif); font-size: 26px; font-weight: 900; line-height: 1; }
+    .stat-lbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
 
-    .stat-num {
-      font-family: var(--serif);
-      font-size: 26px;
-      font-weight: 900;
-      line-height: 1;
-    }
+    .summary-text { padding: 16px 20px; font-size: 13px; line-height: 1.75; color: var(--ink2); border-bottom: 1.5px solid var(--border); font-family: var(--sans); }
 
-    .stat-lbl {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 3px;
-    }
+    .section-label { padding: 8px 16px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--surface2); }
 
-    /* ── Summary ── */
-    .summary-text {
-      padding: 16px 20px;
-      font-size: 13px;
-      line-height: 1.75;
-      color: var(--ink2);
-      border-bottom: 1.5px solid var(--border);
-      font-family: var(--sans);
-    }
-
-    /* ── Section label ── */
-    .section-label {
-      padding: 8px 16px;
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border-bottom: 1px solid var(--border);
-      background: var(--surface2);
-    }
-
-    /* ── Vuln card ── */
     .vuln-card { border-bottom: 1px solid var(--border); }
 
-    .vuln-header {
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      transition: background 0.12s;
-    }
-
+    .vuln-header { padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.12s; }
     .vuln-header:hover { background: var(--surface2); }
 
-    .sev-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
+    .sev-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .sev-CRITICAL { background: var(--critical); }
     .sev-HIGH     { background: var(--high); }
     .sev-MEDIUM   { background: var(--medium); }
     .sev-LOW      { background: var(--low); }
     .sev-INFO     { background: var(--info); }
 
-    .vuln-id {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--muted);
-      width: 40px;
-      flex-shrink: 0;
-    }
+    .vuln-id { font-family: var(--mono); font-size: 10px; color: var(--muted); width: 40px; flex-shrink: 0; }
+    .vuln-title { flex: 1; font-size: 13px; font-weight: 500; color: var(--ink); }
 
-    .vuln-title {
-      flex: 1;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--ink);
-    }
-
-    .sev-label {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      font-weight: 500;
-      padding: 2px 8px;
-      border-radius: 2px;
-      border: 1px solid;
-    }
-
+    .sev-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; padding: 2px 8px; border-radius: 2px; border: 1px solid; }
     .sev-label-CRITICAL { color: var(--critical); border-color: var(--critical); background: #fdf0ee; }
     .sev-label-HIGH     { color: var(--high);     border-color: var(--high);     background: #fdf3ee; }
     .sev-label-MEDIUM   { color: var(--medium);   border-color: var(--medium);   background: #fdf9ee; }
     .sev-label-LOW      { color: var(--low);      border-color: var(--low);      background: #eef7f2; }
     .sev-label-INFO     { color: var(--info);     border-color: var(--info);     background: #eef2fd; }
 
-    .chevron {
-      color: var(--muted);
-      font-size: 12px;
-      transition: transform 0.2s;
-    }
-
+    .chevron { color: var(--muted); font-size: 12px; transition: transform 0.2s; }
     .vuln-card.open .chevron { transform: rotate(90deg); }
 
-    .vuln-body {
-      display: none;
-      padding: 0 16px 16px 56px;
-    }
-
+    .vuln-body { display: none; padding: 0 16px 16px 56px; }
     .vuln-card.open .vuln-body { display: block; }
 
     .vuln-field { margin-top: 12px; }
+    .field-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .field-val { font-size: 13px; line-height: 1.65; color: var(--ink2); }
 
-    .field-label {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
+    .code-block { background: var(--ink); color: #f5c542; border-radius: 3px; padding: 10px 14px; font-family: var(--mono); font-size: 11px; line-height: 1.7; overflow-x: auto; white-space: pre; margin-top: 4px; }
+    .rec-text { background: #eef7f2; border-left: 3px solid var(--low); padding: 10px 14px; font-size: 13px; line-height: 1.65; color: var(--ink2); border-radius: 0 3px 3px 0; }
 
-    .field-val {
-      font-size: 13px;
-      line-height: 1.65;
-      color: var(--ink2);
-    }
+    .positive-list { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+    .positive-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--ink2); line-height: 1.5; }
+    .positive-item::before { content: '✓'; color: var(--low); font-size: 12px; flex-shrink: 0; font-weight: bold; margin-top: 1px; }
 
-    .code-block {
-      background: var(--ink);
-      color: #f5c542;
-      border-radius: 3px;
-      padding: 10px 14px;
-      font-family: var(--mono);
-      font-size: 11px;
-      line-height: 1.7;
-      overflow-x: auto;
-      white-space: pre;
-      margin-top: 4px;
-    }
-
-    .rec-text {
-      background: #eef7f2;
-      border-left: 3px solid var(--low);
-      padding: 10px 14px;
-      font-size: 13px;
-      line-height: 1.65;
-      color: var(--ink2);
-      border-radius: 0 3px 3px 0;
-    }
-
-    /* ── Positive findings ── */
-    .positive-list {
-      padding: 12px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .positive-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 13px;
-      color: var(--ink2);
-      line-height: 1.5;
-    }
-
-    .positive-item::before {
-      content: '✓';
-      color: var(--low);
-      font-size: 12px;
-      flex-shrink: 0;
-      font-weight: bold;
-      margin-top: 1px;
-    }
-
-    /* ── Gas ── */
-    .gas-item {
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--border);
-    }
-
+    .gas-item { padding: 10px 16px; border-bottom: 1px solid var(--border); }
     .gas-item:last-child { border-bottom: none; }
+    .gas-title { font-size: 13px; font-weight: 500; color: var(--medium); margin-bottom: 3px; }
+    .gas-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
 
-    .gas-title {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--medium);
-      margin-bottom: 3px;
-    }
-
-    .gas-desc {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.55;
-    }
-
-    /* ── Error ── */
-    .error-banner {
-      margin: 16px;
-      padding: 14px 16px;
-      background: #fdf0ee;
-      border: 1.5px solid var(--critical);
-      border-radius: 3px;
-      color: var(--critical);
-      font-family: var(--mono);
-      font-size: 12px;
-    }
+    .error-banner { margin: 16px; padding: 14px 16px; background: #fdf0ee; border: 1.5px solid var(--critical); border-radius: 3px; color: var(--critical); font-family: var(--mono); font-size: 12px; }
   </style>
 </head>
 <body>
@@ -537,7 +314,7 @@
   <header>
     <div class="logo-block">
       <span class="logo-eyebrow">AI-Powered Security Tool</span>
-      <h1>Solid<em>Scan</em></h1>
+      <h1>Sol<em>Check</em></h1>
     </div>
     <div class="header-right">
       <div class="header-tag">Paste your Solidity contract.<br>Get a full vulnerability audit, instantly.</div>
@@ -546,7 +323,6 @@
 
   <div class="main-grid">
 
-    <!-- LEFT -->
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div class="card">
         <div class="card-header">
@@ -555,17 +331,14 @@
         </div>
         <textarea id="code-input" spellcheck="false" placeholder="// Paste your Solidity contract here..."></textarea>
       </div>
-
       <button class="audit-btn" id="audit-btn" onclick="runAudit()">
         <div class="spinner"></div>
         <span class="btn-text">Run Security Audit →</span>
       </button>
     </div>
 
-    <!-- RIGHT -->
     <div>
       <div class="card" id="results-panel" style="display:none;"></div>
-
       <div class="card" id="placeholder-panel">
         <div class="placeholder">
           <div class="placeholder-number">13+</div>
@@ -679,7 +452,6 @@ function renderResults(panel, d) {
       <span class="card-title">Audit Report</span>
       <span style="font-family:var(--mono);font-size:10px;color:var(--muted);">powered by Groq / Llama 3.3</span>
     </div>
-
     <div class="score-banner">
       <div class="score-ring">
         <svg viewBox="0 0 72 72" width="72" height="72">
@@ -696,28 +468,13 @@ function renderResults(panel, d) {
         <div class="risk-badge risk-${d.overall_risk}">${d.overall_risk} Risk</div>
       </div>
     </div>
-
     <div class="stats-row">
-      <div class="stat-cell">
-        <div class="stat-num" style="color:var(--critical)">${counts.CRITICAL}</div>
-        <div class="stat-lbl">Critical</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-num" style="color:var(--high)">${counts.HIGH}</div>
-        <div class="stat-lbl">High</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-num" style="color:var(--medium)">${counts.MEDIUM}</div>
-        <div class="stat-lbl">Medium</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-num" style="color:var(--low)">${counts.LOW}</div>
-        <div class="stat-lbl">Low</div>
-      </div>
+      <div class="stat-cell"><div class="stat-num" style="color:var(--critical)">${counts.CRITICAL}</div><div class="stat-lbl">Critical</div></div>
+      <div class="stat-cell"><div class="stat-num" style="color:var(--high)">${counts.HIGH}</div><div class="stat-lbl">High</div></div>
+      <div class="stat-cell"><div class="stat-num" style="color:var(--medium)">${counts.MEDIUM}</div><div class="stat-lbl">Medium</div></div>
+      <div class="stat-cell"><div class="stat-num" style="color:var(--low)">${counts.LOW}</div><div class="stat-lbl">Low</div></div>
     </div>
-
-    <div class="summary-text">${esc(d.summary || '')}</div>
-  `;
+    <div class="summary-text">${esc(d.summary || '')}</div>`;
 
   if (sorted.length) {
     html += `<div class="section-label">Vulnerabilities (${sorted.length})</div>`;
@@ -732,40 +489,22 @@ function renderResults(panel, d) {
             <span class="chevron">›</span>
           </div>
           <div class="vuln-body">
-            <div class="vuln-field">
-              <div class="field-label">Category</div>
-              <div class="field-val">${esc(v.category)} &mdash; ${esc(v.affected_lines)}</div>
-            </div>
-            <div class="vuln-field">
-              <div class="field-label">Description</div>
-              <div class="field-val">${esc(v.description)}</div>
-            </div>
+            <div class="vuln-field"><div class="field-label">Category</div><div class="field-val">${esc(v.category)} &mdash; ${esc(v.affected_lines)}</div></div>
+            <div class="vuln-field"><div class="field-label">Description</div><div class="field-val">${esc(v.description)}</div></div>
             ${v.code_snippet ? `<div class="vuln-field"><div class="field-label">Vulnerable Code</div><div class="code-block">${esc(v.code_snippet)}</div></div>` : ''}
-            <div class="vuln-field">
-              <div class="field-label">Impact</div>
-              <div class="field-val">${esc(v.impact)}</div>
-            </div>
-            <div class="vuln-field">
-              <div class="field-label">Recommendation</div>
-              <div class="rec-text">${esc(v.recommendation)}</div>
-            </div>
+            <div class="vuln-field"><div class="field-label">Impact</div><div class="field-val">${esc(v.impact)}</div></div>
+            <div class="vuln-field"><div class="field-label">Recommendation</div><div class="rec-text">${esc(v.recommendation)}</div></div>
           </div>
         </div>`;
     });
   } else {
-    html += `<div class="section-label">Vulnerabilities</div>
-      <div class="placeholder" style="padding:24px 16px">
-        <p style="color:var(--low);font-family:var(--mono)">✓ No vulnerabilities detected.</p>
-      </div>`;
+    html += `<div class="section-label">Vulnerabilities</div><div class="placeholder" style="padding:24px 16px"><p style="color:var(--low);font-family:var(--mono)">✓ No vulnerabilities detected.</p></div>`;
   }
 
   if (gas.length) {
     html += `<div class="section-label">Gas Optimisations (${gas.length})</div>`;
     gas.forEach(g => {
-      html += `<div class="gas-item">
-        <div class="gas-title">${esc(g.title)}</div>
-        <div class="gas-desc">${esc(g.description)} <span style="color:var(--muted);font-family:var(--mono);font-size:10px">${esc(g.affected_lines)}</span></div>
-      </div>`;
+      html += `<div class="gas-item"><div class="gas-title">${esc(g.title)}</div><div class="gas-desc">${esc(g.description)} <span style="color:var(--muted);font-family:var(--mono);font-size:10px">${esc(g.affected_lines)}</span></div></div>`;
     });
   }
 
@@ -778,9 +517,7 @@ function renderResults(panel, d) {
   panel.innerHTML = html;
 }
 
-function toggle(i) {
-  document.getElementById(`vc-${i}`).classList.toggle('open');
-}
+function toggle(i) { document.getElementById(`vc-${i}`).classList.toggle('open'); }
 
 function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
